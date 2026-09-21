@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>ch05 practice.html 파일</h1>
+
+    <script>
+      // 1. 함수 선언문 (기본 방식)
+      function greet(name) {
+        return "안녕하세요 " + name + "님";
+      }
+
+      console.log(greet("홍길동"));
+
+      // 2. 함수 표현식 (변수에 담는 방식)
+      const greet1 = function (name) {
+        return "안녕하세요 " + name + "님";
+      };
+
+      console.log(greet1("이순신"));
+
+      // 3. 화살표 함수
+      const greet2 = (name) => {
+        return "안녕하세요 " + name + "님";
+      };
+
+      console.log(greet2("김길동"));
+
+      // 4.
+      const greet3 = (a, b) => {
+        return a + b;
+      };
+
+      console.log(10 + 30);
+
+      // 5. 기본 매개변수
+      function sayHello(name = "손님") {
+        console.log("환영합니다, " + name + "님");
+      }
+
+      sayHello();
+      sayHello("김희성");
+
+      // 6. 나머지 매개변수
+      function sumAll(...numbers) {
+        let total = 0;
+        for (const num of numbers) {
+          total += num;
+        }
+        return total;
+      }
+      console.log(sumAll(1, 2, 3, 4));
+
+      // 7. 콜백 함수
+      setTimeout(() => {
+        console.log("3초 뒤에 실행됩니다!");
+      }, 3000);
+
+      // 8. 콜백 함수
+      function add(num1, num2, callback) {
+        const result = num1 + num2;
+        callback(result);
+      }
+
+      add(5, 10, (sum) => {
+        console.log("더한 결과는: " + sum);
+      });
+    </script>
+  </body>
+</html>
