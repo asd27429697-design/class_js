@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>ch06 practice.html 파일</h1>
+
+    <script>
+      console.log("--------------- 1. 메서드를 호출하면 this는 점 앞에 객체이다 ------------------");
+
+      const cat = {
+        name: "나비",
+        name2: "나비2",
+        introduce: function () {
+          console.log("제 이름은 " + this.name2 + " 입니다");
+        },
+      };
+      cat.introduce();
+
+      // console.log("-----2. 같은 함수를 다른 객체에 붙이면 this도 바뀐다 --------");
+      // const dog = {
+      //   name: 초코,
+      //   introduce: cat.introduce,
+      // };
+
+      // dog.introduce();
+
+      console.log("------3. 그냥 호출하면 this 는 window 이다. --------");
+
+      const alone = cat.introduce;
+      alone();
+
+      console.log("------4. new로 호출하면 this는 새로 만들어지는 객체를 가리킨다 --------");
+
+      function Member(name) {
+        this.name = name;
+      }
+
+      const member1 = new Member("홍길동");
+      console.log(member1.name);
+
+      const shop = {
+        name: "코딩상점",
+        products: ["마우스", "키보드"],
+        printAll() {
+          this.products.forEach((product) => {
+            // 일반 함수 콜백은 점 없이 호출되므로 this === window
+            console.log(`${this.name} - ${product}`); // undefined - 마우스
+          });
+        },
+      };
+
+      const timer = {
+        seconds: 3,
+        label: "요리 타이머",
+
+        // 1. 메서드는 축약 문법 (일반 함수)
+        start() {
+          console.log(`${this.label} 시작 (${this.seconds}초)`);
+
+          // 2. 내부 콜백은 화살표 함수
+          setTimeout(() => {
+            console.log(`${this.label} 끝!`);
+          }, 3000);
+        },
+      };
+
+      timer.start();
+    </script>
+  </body>
+</html>
