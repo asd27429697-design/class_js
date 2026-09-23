@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .box-item {
+        display: flex;
+        margin: 10px;
+        gap: 10px;
+      }
+
+      .box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: aqua;
+        width: 100px;
+        height: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>ch12/index04.html - 요소 동적 추가</h1>
+
+    <button id="btn1">아이템 추가</button>
+
+    <div class="box-item" id="box-item">
+      <div class="box" id="box1">아이템1</div>
+      <div class="box" id="box2">아이템2</div>
+      <div class="box" id="box3">아이템3</div>
+    </div>
+
+    <script>
+      // 1. 요소 찾기
+      const btn1 = document.getElementById("btn1");
+      const boxItem = document.getElementById("box-item");
+
+      // 2. 이벤트 리스너 등록
+      btn1.addEventListener("click", () => {
+        const newbox = document.createElement("div");
+
+        // 3. 클래스 추가
+        newbox.classList.add("box");
+        newbox.textContent = `아이템${boxItem.children.length + 1}`;
+
+        boxItem.appendChild(newbox);
+      });
+    </script>
+  </body>
+</html>
