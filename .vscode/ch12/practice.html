@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .cart-list {
+        list-style: none;
+        padding: 0;
+      }
+
+      .item {
+        padding: 10px;
+        margin-bottom: 5px;
+        background-color: #f0f0f0;
+        border-radius: 4px;
+        width: 150px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>ch12/practice.html - 장바구니 항목 동적 추가</h1>
+
+    <button id="add-btn">상품 추가</button>
+
+    <ul class="cart-list" id="cart-list">
+      <li class="item">상품 1</li>
+      <li class="item">상품 2</li>
+    </ul>
+
+    <script>
+      // 1. 요소 찾기
+      const addBtn = document.getElementById("add-btn");
+      const cartList = document.getElementById("cart-list");
+
+      // 2. 이벤트 리스너 등록
+      addBtn.addEventListener("click", () => {
+        const newcart = document.createElement("li");
+
+        // 3. 클래스 추가
+        newcart.classList.add("item");
+        newcart.textContent = `상품 ${cartList.children.length + 1}`;
+
+        cartList.appendChild(newcart);
+      });
+    </script>
+  </body>
+</html>
