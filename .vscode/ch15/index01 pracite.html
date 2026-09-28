@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>ch15 index01 practice.html</h1>
+
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        padding: 5px;
+      }
+      .heart-container {
+        display: flex;
+        gap: 30px;
+      }
+      .like-heart {
+        font-size: 40px;
+        cursor: pointer;
+        /* 애니메이션 설정 : 속성명 지속시간 속도곡선 */
+        transition:
+          color 0.5s ease,
+          transform 0.5s ease;
+      }
+      .liked {
+        color: aqua;
+        transform: scale(1.5);
+      }
+    </style>
+
+    <div class="heart-container">
+      <div class="like-heart">&#9825;</div>
+      <div class="like-heart">&#9825;</div>
+      <div class="like-heart">&#9825;</div>
+    </div>
+
+    <script>
+      const container = document.querySelector(".heart-container");
+
+      container.addEventListener("click", (event) => {
+        if (!event.target.classList.contains("like-heart")) {
+          return;
+        }
+
+        const isLiked = event.target.classList.toggle("liked");
+        console.log(isLiked ? "좋아요" : "좋아요 취소");
+      });
+    </script>
+  </body>
+</html>
