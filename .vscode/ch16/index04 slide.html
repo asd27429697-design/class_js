@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>드래그 슬라이더</title>
+    <link rel="stylesheet" href="../reset.css" />
+    <style>
+      /* 1단계 : 리셋 + 전역 스타일 */
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        color: #333;
+        padding: 20px;
+      }
+
+      /* 2단계 : 레이아웃 */
+      .banner-container {
+        display: flex;
+        align-items: center;
+        width: 80%;
+        max-width: 600px;
+        margin: 50px auto;
+        border: 2px solid black;
+      }
+
+      .image-wrapper {
+        flex: 1;
+        height: 200px;
+        overflow: hidden;
+        /* 마우스 커서를 손바닥 모양으로 바꾸고 드래그 시 이미지 선택 방지 */
+        cursor: grab;
+        user-select: none;
+      }
+
+      .image-wrapper:active {
+        cursor: grabbing; /* 클릭해서 끌 때 쥐는 손가락 모양 */
+      }
+
+      /* 3단계 : 컴포넌트 스타일 */
+      .image-track {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.5s ease-in-out;
+      }
+
+      .image-wrapper img {
+        width: 100%;
+        height: 100%;
+        flex-shrink: 0;
+        /* 마우스 드래그 시 웹브라우저 기본 이미지 끌기 동작 방지 */
+        -webkit-user-drag: none;
+      }
+
+      .control-btn {
+        padding: 20px;
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      .control-btn:hover {
+        transform: scale(1.3);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>ch16 - 마우스 드래그 슬라이드</h1>
+
+    <div class="banner-container">
+      <button class="control-btn prev-btn">&lt;</button>
+
+      <div class="image-wrapper">
+        <div class="image-track">
+          <img src="https://picsum.photos/id/20/400/300" alt="" />
+          <img src="https://picsum.photos/id/30/400/300" alt="" />
+          <img src="https://picsum.photos/id/40/400/300" alt="" />
+        </div>
+      </div>
+
+      <button class="control-btn next-btn">&gt;</button>
+    </div>
+
+    <script>
+      const prevButton = document.querySelector(".prev-btn");
+      const nextButton = document.querySelector(".next-btn");
+      const imageTrack = document.querySelector(".image-track");
+      const imageList = document.querySelectorAll(".image-wrapper img");
+      const bannerContainer = document.querySelector(".banner-container");
+
+      let currentIndex = 0;
+      const imageCount = imageList.length;
+      let timerId = null;
+
+      // --- 드래그 전용 상태 변수 ---
+      let isDragging = false;
+      let startX = 0;
+      let currentTranslate = 0;
+
+      // 1. 자동 슬라이드 제어
+      function startAutoSlide() {
+        if (timerId !== null) return;
+        timerId = setInterval(() => {
+          updateBanner((currentIndex + 1) % imageCount);
+        }, 2000);
+        return;
+      }
+
+      function stopAutoSlide() {
+        clearInterval(timerId);
+        timerId = null;
+      }
+
+      function restartAutoSlide() {
+        stopAutoSlide();
+        startAutoSlide();
+      }
+
+      // 2. 버튼 클릭 이벤트
+      prevButton.addEventListener("click", () => {
+        let newIndex = currentIndex - 1;
+        if (newIndex < 0) newIndex = imageCount - 1;
+        updateBanner(newIndex);
+        restartAutoSlide();
+      });
+
+      nextButton.addEventListener("click", () => {
+        let newIndex = (currentIndex + 1) % imageCount;
+        updateBanner(newIndex);
+        restartAutoSlide();
+      });
+
+      // 3. 마우스 드래그 이벤트 (핵심 추가 로직)
+      imageTrack.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        stopAutoSlide(); // 잡고 있는 동안은 자동 이동 멈춤
+
+        // 드래그하는 동안 손가락/마우스를 즉각 따라오도록 애니메이션(transition)을 잠시 끕니다.
+        imageTrack.style.transition = "none";
+      });
+
+      imageTrack.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+
+        // 마우스를 얼마나 이동했는지 계산
+        const currentX = e.clientX;
+        const diffX = currentX - startX;
+
+        // 현재 배너 너비(px) 기준으로 마우스 위치 계산
+        const wrapperWidth = document.querySelector(".image-wrapper").offsetWidth;
+        currentTranslate = -currentIndex * wrapperWidth + diffX;
+
+        imageTrack.style.transform = `translateX(${currentTranslate}px)`;
+      });
+
+      // 마우스를 뗬을 때 드래그 종료 처리
+      function endDrag(e) {
+        if (!isDragging) return;
+        isDragging = false;
+
+        // 이동 완료 후에는 부드럽게 넘어가도록 transition 복구
+        imageTrack.style.transition = "transform 0.5s ease-in-out";
+
+        const movedBy = e.clientX - startX;
+
+        // 50px 이상 끌었을 때만 이전/다음으로 넘어가고, 약하게 끌면 제자리
+        if (movedBy < -50 && currentIndex < imageCount - 1) {
+          currentIndex += 1;
+        } else if (movedBy > 50 && currentIndex > 0) {
+          currentIndex -= 1;
+        }
+
+        updateBanner(currentIndex);
+        startAutoSlide();
+      }
+
+      imageTrack.addEventListener("mouseup", endDrag);
+      imageTrack.addEventListener("mouseleave", endDrag);
+
+      // 4. 화면 갱신 함수
+      function updateBanner(newIndex) {
+        currentIndex = newIndex;
+        imageTrack.style.transform = `translateX(-${currentIndex * 100}%)`;
+      }
+
+      // 최초 실행
+      startAutoSlide();
+    </script>
+  </body>
+</html>
