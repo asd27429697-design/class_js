@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>ch17 index04 practice.html 파일</h1>
+    <input type="text" value="치킨" style="padding: 4px" id="orderInput" />
+    <button id="orderButton">배달 주문하기</button>
+    <p id="noticeBoard" style="padding: 50px; border: 1px solid #ccc; text-align: center">주문을 기다리고 있습니다</p>
+
+    <script>
+      const orderButton = document.getElementById("orderButton");
+      const orderInput = document.getElementById("orderInput");
+      const noticeBoard = document.getElementById("noticeBoard");
+
+      function OrderFood(order) {
+        return new Promise(function (resolve, rejected) {
+          setTimeout(function () {
+            if (order === "양념치킨" || order === "떡볶이") {
+              resolve(order + " 배달이 완료 되었습니다");
+            } else {
+              rejected("죄송합니다 " + order + " 재료가 다 떨어져 판매를 하지 않습니다");
+            }
+          }, 3000);
+        });
+      }
+
+      orderButton.addEventListener("click", async () => {
+        try {
+          console.log("주문");
+          const message = await OrderFood(orderInput.value);
+          noticeBoard.textContent = message;
+          console.log("배달 완료");
+        } catch (error) {
+          noticeBoard.textContent = error;
+          console.log("주문 취소");
+        }
+      });
+    </script>
+  </body>
+</html>
